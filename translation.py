@@ -47,15 +47,15 @@ def translate(in_file, out_file):
         }
     }
 
-    with open(in_file, 'r') as f:
+    with open(in_file, 'r') as f: # file with the workload
         for l in f:
-            if l.split()[0] != ';':
+            if l.split()[0] != ';': # ignores comments
                 job = {'id': int(l.split()[0]), 'profile': 'parallel_homogeneous', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[3])}
                 jobs.append(job)
 
-    final = """{\n"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
-    \n  "command": "translate_submission_times.py -i 4 -w generated_workloads/2016-05-04/g5k_workload_delay_seed1_size32.json",
-    "date": "2016-05-17 10:28:31.851083"}"""
+    final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
+    "command": "python3 translation.py workload_file_input json_file_output",
+    "date": "03-11-2022 11:30:25"}"""
 
     test = json.loads(final)
     job_final = {"jobs": jobs}
@@ -63,13 +63,8 @@ def translate(in_file, out_file):
     test.update(nb_res)
     test.update(profiles)
 
-
-
-    
-    with open(out_file, 'w') as f:
+    with open(out_file, 'w') as f: # json file
         json.dump(test, f, indent=2, sort_keys=True)
-
-
 
 #             "id": 0,                      -- name
 #             "profile": "delay_ft.B.1",    --
