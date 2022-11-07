@@ -1,7 +1,5 @@
 import argparse
-import csv
 import json
-import string
 
 def translate(in_file, out_file):
 
@@ -9,20 +7,28 @@ def translate(in_file, out_file):
     jobs = []
     profiles = []
 
-    description = {"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
-    "command": "translate_submission_times.py -i 4 -w generated_workloads/2016-05-04/g5k_workload_delay_seed1_size32.json",
-    "date": "2016-05-17 10:28:31.851083"}
 
 
     with open(in_file, 'r') as f:
         for l in f:
             line = []
             if l.split()[0] != ';':
-                job = {'id': '{}'.format(int(l.split()[0])), 'profile': '{}', 'res': '{}'.format(int(l.split()[7])), 'subtime': '{}'.format(int(l.split()[1])), 'walltime': '{}'.format(int(l.split()[3]))}
+                job = {'id': int(l.split()[0]), 'profile': '{}', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[3])}
                 jobs.append(job)
+
+    final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
+    "command": "translate_submission_times.py -i 4 -w generated_workloads/2016-05-04/g5k_workload_delay_seed1_size32.json",
+    "date": "2016-05-17 10:28:31.851083"}"""
+
+    test = json.loads(final)
+    job_final = {"jobs": jobs}
+    test.update(job_final)
+
+
+
     
     with open(out_file, 'w') as f:
-        json.dump(description.append(description), f)
+        json.dump(test, f)
 
 
 
