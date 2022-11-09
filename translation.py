@@ -46,6 +46,7 @@ def translate(in_file, out_file):
             }
         }
     }
+    # perguntas se quer walltime ou runtime
 
     with open(in_file, 'r') as f: # file with the workload
         for l in f:
