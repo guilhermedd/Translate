@@ -50,7 +50,7 @@ def translate(in_file, out_file):
     with open(in_file, 'r') as f: # file with the workload
         for l in f:
             if l.split()[0] != ';': # ignores comments
-                job = {'id': int(l.split()[0]), 'profile': 'parallel_homogeneous', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[3])}
+                job = {'id': int(l.split()[0]), 'profile': 'parallel_homogeneous', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[8])}
                 jobs.append(job)
 
     final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
@@ -79,3 +79,8 @@ if __name__ == '__main__':
     arg = parser.parse_args() #  arg.filename = name of the file
 
     translate(arg.input_file, arg.json_file)
+
+    """
+        processors(requested) * avg CPU time * const = CPU_profile
+        com = 0
+    """
