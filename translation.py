@@ -1,71 +1,43 @@
 import argparse
 import json
+import os
 
 def translate(in_file, out_file):
 
     nb_res = {"nb_res": 128}
     jobs = []
-    profiles = {"profiles": 
-        {
-            "simple": {
-                "type": "parallel",
-                "cpu": [5e6,  0,  0,  0],
-                "com": [5e6,  0,  0,  0,
-                        5e6,5e6,  0,  0,
-                        5e6,5e6,  0,  0,
-                        5e6,5e6,5e6,  0]
-            },
-            "homogeneous": {
-                "type": "parallel_homogeneous",
-                "cpu": 10e6,
-                "com": 1e6
-            },
-            "homogeneous_no_cpu": {
-                "type": "parallel_homogeneous",
-                "cpu": 0,
-                "com": 1e6
-            },
-            "homogeneous_no_com": {
-                "type": "parallel_homogeneous",
-                "cpu": 2e5,
-                "com": 0
-            },
-            "sequence": {
-                "type": "composed",
-                "repeat" : 4,
-                "seq": ["simple","homogeneous","simple"]
-            },
-            "delay": {
-                "type": "delay",
-                "delay": 20.20
-            },
-            "homogeneous_total": {
-                "type": "parallel_homogeneous_total",
-                "cpu": 10e6,
-                "com": 1e6
-            }
-        }
-    }
-    # perguntas se quer walltime ou runtime
+    profiles = []
+    num_profile = 0
+    answer = -1
+    FLOP_INFRASTRUCTURE = 22355
+
+    while answer < 1 or answer > 2:
+        print("Would you like to use Walltime (press 1) or runtime (press 2)?")
+        answer = int(input())
+
 
     with open(in_file, 'r') as f: # file with the workload
         for l in f:
             if l.split()[0] != ';': # ignores comments
-                job = {'id': int(l.split()[0]), 'profile': 'parallel_homogeneous', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[8])}
-                jobs.append(job)
 
-    final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments)",
+                jobs.append({'id': int(l.split()[0]), 'profile': 'profile_job_{}'.format(num_profile), 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[8])} if answer == 1 else {'id': int(l.split()[0]), 'profile': 'parallel_homogeneous', 'res': int(l.split()[7]), 'subtime': int(l.split()[1]), 'walltime': int(l.split()[3])}) 
+
+                profiles.append({'profile_job_{}'.format(num_profile): {'type': 'parallel_homogeneous', 'cpu': int(l.split()[7])*float(l.split()[5])*FLOP_INFRASTRUCTURE, 'com': 0}})
+                num_profile += 1
+
+    final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments). Infrastructure details: Intel Xeon E5-2698 v4 @ 2.20GHz ==> 22.355 FLOPS",
     "command": "python3 translation.py workload_file_input json_file_output",
     "date": "03-11-2022 11:30:25"}"""
 
     test = json.loads(final)
-    job_final = {"jobs": jobs}
-    test.update(job_final)
+    final_jobs = {"jobs": jobs}
+    final_profiles = {"profiles":  profiles}
+    test.update(final_jobs)
     test.update(nb_res)
-    test.update(profiles)
+    test.update(final_profiles)
 
     with open(out_file, 'w') as f: # json file
-        json.dump(test, f, indent=2, sort_keys=True)
+        json.dump(test, f, indent=2)
 
 #             "id": 0,                      -- name
 #             "profile": "delay_ft.B.1",    --
