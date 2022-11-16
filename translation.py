@@ -37,7 +37,6 @@ def translate(in_file, out_file):
     profiles_final = {"profile": profiles}
     updated = json.loads(final)
     final_jobs = {"jobs": jobs}
-    final_profiles = {"profiles":  profiles}
     updated.update(final_jobs)
     updated.update(nb_res)
     updated.update(profiles_final)
@@ -59,8 +58,3 @@ if __name__ == '__main__':
 
     translate(arg.input_file, arg.json_file)
 
-    """
-        se for -1 ignorar
-        processors(requested) * avg CPU time * const = CPU_profile
-        com = 0
-    """
