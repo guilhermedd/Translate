@@ -34,7 +34,7 @@ def translate(in_file, out_file):
     "command": "python3 translation.py workload_file_input json_file_output",
     "date": "03-11-2022 11:30:25"}"""
 
-    profiles_final = {"profile": profiles}
+    profiles_final = {"profiles": profiles}
     updated = json.loads(final)
     final_jobs = {"jobs": jobs}
     updated.update(final_jobs)
