@@ -27,7 +27,7 @@ def translate(in_file, out_file):
                 jobs.append({'id': int(int(l.split()[0]) if int(l.split()[0]) != -1 else 0), 'profile': 'profile_job_{}'.format(num_profile), 'res': int(int(l.split()[7]) if int(l.split()[7]) != -1 else 0), 'subtime': int(int(l.split()[1]) if int(l.split()[1]) != -1 else 0), 'walltime': int(int(l.split()[8]) if int(l.split()[8]) != -1 else 0)} if answer == 1 else {
                             'id': int(int(l.split()[0]) if int(l.split()[0]) != -1 else 0), 'profile': 'profile_job_{}'.format(num_profile), 'res': int(int(l.split()[7]) if int(l.split()[7]) != -1 else 0), 'subtime': int(int(l.split()[1]) if int(l.split()[1]) != -1 else 0), 'walltime': int(int(l.split()[3]) if int(l.split()[3]) != -1 else 0)})
 
-                profiles.update({'profile_job_{}'.format(num_profile): {'type': 'parallel_homogeneous', 'cpu': int(int(l.split()[7]))*float(l.split()[5])*FLOP_INFRASTRUCTURE}})
+                profiles.update({'profile_job_{}'.format(num_profile): {'com': 0, 'command': '"mpirun --mca btl self,sm,tcp -hostfile \\$OAR_NODEFILE --path $PATH ft.B.1"', 'type': 'parallel_homogeneous', 'cpu': int(int(l.split()[7]))*float(l.split()[5])*FLOP_INFRASTRUCTURE}})
                 num_profile += 1
 
     final = """{"description": "This workload is part of those which have been generated to conduct the experiments described in Batsim's JSSPP article. More information about how it has been generated can be found in the article and on the Batsim Experiments github page (https://github.com/oar-team/batsim-experiments). Infrastructure details: Intel Xeon E5-2698 v4 @ 2.20GHz ==> 22.355 FLOPS",
